@@ -663,6 +663,10 @@
         "trafficcraft:asphalt_slope_pattern_327",
         "trafficcraft:asphalt_pattern_328",
         "trafficcraft:asphalt_slope_pattern_328",
+        "trafficcraft:asphalt_pattern_329",
+        "trafficcraft:asphalt_slope_pattern_329",
+        "trafficcraft:asphalt_pattern_330",
+        "trafficcraft:asphalt_slope_pattern_330",
         "trafficcraft:concrete_pattern_0",
         "trafficcraft:concrete_slope_pattern_0",
         "trafficcraft:concrete_pattern_1",
@@ -1320,6 +1324,10 @@
         "trafficcraft:concrete_pattern_327",
         "trafficcraft:concrete_slope_pattern_327",
         "trafficcraft:concrete_pattern_328",
-        "trafficcraft:concrete_slope_pattern_328"
+        "trafficcraft:concrete_slope_pattern_328",
+        "trafficcraft:concrete_pattern_329",
+        "trafficcraft:concrete_slope_pattern_329",
+        "trafficcraft:concrete_pattern_330",
+        "trafficcraft:concrete_slope_pattern_330"
     ]
 }
