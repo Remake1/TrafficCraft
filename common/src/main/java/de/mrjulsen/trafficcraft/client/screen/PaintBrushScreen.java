@@ -75,7 +75,7 @@ public class PaintBrushScreen extends DLWindow {
         DLTexture path = new DLTexture(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/block/sign_blank.png"), 32, 32);
         List<DLTexture> locs = new ArrayList<>();
 
-        for (int i = 1; i <= Constants.MAX_ASPHALT_PATTERNS + 1; i++) {
+        for (int i = 1; i <= Constants.MAX_ASPHALT_PATTERNS; i++) {
             locs.add(path);
             path = new DLTexture(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/block/patterns/" + i + ".png"), 32, 32);
         }
@@ -126,7 +126,7 @@ public class PaintBrushScreen extends DLWindow {
         scrollbar.anchor.set2(EAlign.BOTTOM, EAlign.TOP, EAlign.RIGHT);
         scrollbar.scrollerSize.set(0);
         scrollbar.screenSize.set(innerPanel.height());
-        scrollbar.max.set((int)Math.ceil(count / MAX_ENTRIES_IN_ROW * ICON_BUTTON_HEIGHT));
+        scrollbar.max.set((int)Math.ceil((double)count / MAX_ENTRIES_IN_ROW) * ICON_BUTTON_HEIGHT);
         scrollbar.inputConsumptionPolicy.set(c -> true);
         scrollbar.scrollSteps.set(ICON_BUTTON_HEIGHT);
         scrollbar.addEventListener(DLScrollBar.ValueChangedEvent.class, (s, e) -> {

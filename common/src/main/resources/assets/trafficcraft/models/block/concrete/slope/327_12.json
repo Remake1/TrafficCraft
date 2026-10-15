@@ -1,0 +1,12 @@
+{
+    "parent": "trafficcraft:block/road_slope_12",
+    "textures": {
+        "base": "trafficcraft:block/concrete",
+        "overlay": "trafficcraft:block/patterns/327",
+        "north": "trafficcraft:block/patterns/0",
+        "east": "trafficcraft:block/patterns/thin_edge_side_north",
+        "south": "trafficcraft:block/patterns/thin_edge_side_south",
+        "west": "trafficcraft:block/patterns/0",
+        "particle": "trafficcraft:block/concrete"
+    }
+}
