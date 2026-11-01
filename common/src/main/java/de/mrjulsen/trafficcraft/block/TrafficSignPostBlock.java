@@ -227,5 +227,11 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     @Override
     public boolean canConnect(BlockState pState, Direction pDirection) {
         return true;
-    } 
+    }
+
+    @Override
+    public boolean canMountPanel(BlockState pState, Direction panelFacing) {
+        // Vertical posts accept panels on every horizontal side, horizontal posts (gantries) on the two sides perpendicular to their axis.
+        return panelFacing.getAxis().isHorizontal() && panelFacing.getAxis() != pState.getValue(AXIS);
+    }
 }

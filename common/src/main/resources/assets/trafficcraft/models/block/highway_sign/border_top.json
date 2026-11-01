@@ -1,0 +1,72 @@
+{
+    "textures": {
+        "particle": "trafficcraft:block/sign",
+        "face": "trafficcraft:block/highway_sign/face"
+    },
+    "elements": [
+        {
+            "from": [
+                0,
+                15,
+                14.25
+            ],
+            "to": [
+                16,
+                16,
+                14.5
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        0,
+                        0,
+                        1,
+                        1
+                    ],
+                    "texture": "#face",
+                    "tintindex": 1
+                },
+                "east": {
+                    "uv": [
+                        0,
+                        0,
+                        1,
+                        1
+                    ],
+                    "texture": "#face",
+                    "tintindex": 1
+                },
+                "west": {
+                    "uv": [
+                        0,
+                        0,
+                        1,
+                        1
+                    ],
+                    "texture": "#face",
+                    "tintindex": 1
+                },
+                "up": {
+                    "uv": [
+                        0,
+                        0,
+                        1,
+                        1
+                    ],
+                    "texture": "#face",
+                    "tintindex": 1
+                },
+                "down": {
+                    "uv": [
+                        0,
+                        0,
+                        1,
+                        1
+                    ],
+                    "texture": "#face",
+                    "tintindex": 1
+                }
+            }
+        }
+    ]
+}

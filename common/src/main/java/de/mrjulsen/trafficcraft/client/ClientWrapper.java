@@ -7,7 +7,10 @@ import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
 import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
+import de.mrjulsen.trafficcraft.block.HighwaySignBlock;
+import de.mrjulsen.trafficcraft.block.entity.HighwaySignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
+import de.mrjulsen.trafficcraft.client.screen.HighwaySignEditorScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightConfigScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignPatternSelectionScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
@@ -23,6 +26,7 @@ import de.mrjulsen.trafficcraft.util.ETimeFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -67,6 +71,33 @@ public class ClientWrapper {
 
     public static void showTownSignScreen(TownSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
         Minecraft.getInstance().setScreen(new TownSignScreen(pSign, side));
+    }
+
+    public static void showHighwaySignEditor(HighwaySignBlockEntity blockEntity) {
+        Minecraft.getInstance().setScreen(new HighwaySignEditorScreen(blockEntity));
+    }
+
+    /** Called when the server answered an update request of the highway sign editor. May be called from any thread. */
+    public static void handleHighwaySignResult(BlockPos anchor, HighwaySignBlock.ResizeResult result) {
+        Minecraft.getInstance().execute(() -> {
+            if (Minecraft.getInstance().screen instanceof HighwaySignEditorScreen screen && screen.getAnchor().equals(anchor)) {
+                screen.onServerResult(result);
+            }
+        });
+    }
+
+    /** Rebuilds the chunk meshes of all cells of a highway sign, e.g. after its colors changed. */
+    @SuppressWarnings("resource")
+    public static void markHighwaySignDirty(Level level, BlockPos anchor, Direction facing, int width, int height) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.levelRenderer == null || mc.level == null || mc.level != level) {
+            return;
+        }
+        BlockPos far = HighwaySignBlock.cellPos(anchor, facing, width - 1, height - 1);
+        mc.levelRenderer.setBlocksDirty(
+            Math.min(anchor.getX(), far.getX()), anchor.getY(), Math.min(anchor.getZ(), far.getZ()),
+            Math.max(anchor.getX(), far.getX()), far.getY(), Math.max(anchor.getZ(), far.getZ())
+        );
     }
 
     

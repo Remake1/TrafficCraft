@@ -11,4 +11,12 @@ public interface ITrafficPostLike {
     default boolean canConnect(BlockState pState, Direction pDirection) {
         return pDirection == Direction.UP || pDirection == Direction.DOWN;
     }
+
+    /**
+     * Whether a flat panel (e.g. a highway sign) facing {@code panelFacing} can be mounted on this block.
+     * The panel is located on the {@code panelFacing} side of this block.
+     */
+    default boolean canMountPanel(BlockState pState, Direction panelFacing) {
+        return canAttach(pState, null, panelFacing);
+    }
 }

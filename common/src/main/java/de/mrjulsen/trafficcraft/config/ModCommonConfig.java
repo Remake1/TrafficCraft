@@ -20,6 +20,8 @@ public class ModCommonConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_SALT_SPEED;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ROAD_SALT_DAMAGE;
 
+    public static final ForgeConfigSpec.ConfigValue<Integer> HIGHWAY_SIGN_TEXT_RENDER_DISTANCE;
+
     static {
         BUILDER.push(TrafficCraft.MOD_ID + "_common_config");
         
@@ -49,6 +51,9 @@ public class ModCommonConfig {
             .defineInRange("gameplay.road_salt.speed", 100, 1, Short.MAX_VALUE);            
         ROAD_SALT_DAMAGE = BUILDER.comment("Whether road salt should damage the environment. (Default: ON)")
             .define("gameplay.road_salt.enable_environmental_damage", true);
+
+        HIGHWAY_SIGN_TEXT_RENDER_DISTANCE = BUILDER.comment("Max distance in blocks at which text and arrows of highway signs are rendered. The sign panel itself is always visible. (Default: 96)")
+            .defineInRange("rendering.highway_sign.text_render_distance", 96, 16, 256);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

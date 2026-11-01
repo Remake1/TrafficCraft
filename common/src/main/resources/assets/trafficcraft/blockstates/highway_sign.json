@@ -1,0 +1,234 @@
+{
+    "multipart": [
+        {
+            "when": {
+                "facing": "north"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/panel"
+            }
+        },
+        {
+            "when": {
+                "facing": "north",
+                "edge_top": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_top"
+            }
+        },
+        {
+            "when": {
+                "facing": "north",
+                "edge_bottom": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_bottom"
+            }
+        },
+        {
+            "when": {
+                "facing": "north",
+                "edge_left": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_left"
+            }
+        },
+        {
+            "when": {
+                "facing": "north",
+                "edge_right": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_right"
+            }
+        },
+        {
+            "when": {
+                "facing": "north",
+                "mounted": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/bracket"
+            }
+        },
+        {
+            "when": {
+                "facing": "east"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/panel",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "edge_top": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_top",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "edge_bottom": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_bottom",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "edge_left": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_left",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "edge_right": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_right",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "mounted": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/bracket",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "south"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/panel",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "edge_top": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_top",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "edge_bottom": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_bottom",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "edge_left": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_left",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "edge_right": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_right",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "mounted": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/bracket",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "west"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/panel",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "edge_top": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_top",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "edge_bottom": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_bottom",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "edge_left": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_left",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "edge_right": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/border_right",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "mounted": "true"
+            },
+            "apply": {
+                "model": "trafficcraft:block/highway_sign/bracket",
+                "y": 270
+            }
+        }
+    ]
+}

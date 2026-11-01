@@ -16,6 +16,7 @@ import de.mrjulsen.trafficcraft.block.ConcreteBarrierBlock;
 import de.mrjulsen.trafficcraft.block.DelineatorBlock;
 import de.mrjulsen.trafficcraft.block.FluorescentTubeLampBlock;
 import de.mrjulsen.trafficcraft.block.GuardrailBlock;
+import de.mrjulsen.trafficcraft.block.HighwaySignBlock;
 import de.mrjulsen.trafficcraft.block.HouseNumberSignBlock;
 import de.mrjulsen.trafficcraft.block.ManholeBlock;
 import de.mrjulsen.trafficcraft.block.ManholeCoverBlock;
@@ -119,6 +120,7 @@ public class ModBlocks {
     public static final RegistrySupplier<Block> TRAFFIC_SIGN = registerBlock("traffic_sign", () -> new TrafficSignBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistrySupplier<Block> TOWN_SIGN = registerBlock("town_sign", () -> new TownSignBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistrySupplier<Block> STREET_SIGN = registerColoredBlock("street_sign", () -> new StreetSignBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistrySupplier<Block> HIGHWAY_SIGN = registerBlock("highway_sign", () -> new HighwaySignBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistrySupplier<Block> HOUSE_NUMBER_SIGN = registerColoredBlock("house_number_sign", () -> new HouseNumberSignBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistrySupplier<Block> TRAFFIC_LIGHT = registerColoredBlock("traffic_light", () -> new TrafficLightBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistrySupplier<Block> TRAFFIC_LIGHT_CONTROLLER = registerBlock("traffic_light_controller", () -> new TrafficLightControllerBlock(), ModCreativeModeTab.MOD_TAB, false);

@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.registry;
 
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.HighwaySignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.EmptyBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
@@ -39,6 +40,7 @@ public class ModBlockEntities {
     public static final RegistrySupplier<BlockEntityType<TownSignBlockEntity>> TOWN_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("town_sign_block_entity", () -> BlockEntityType.Builder.of(TownSignBlockEntity::new, ModBlocks.TOWN_SIGN.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<StreetSignBlockEntity>> STREET_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("street_sign_block_entity", () -> BlockEntityType.Builder.of(StreetSignBlockEntity::new, ModBlocks.STREET_SIGN.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<HouseNumberSignBlockEntity>> HOUSE_NUMBER_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("house_number_sign_block_entity", () -> BlockEntityType.Builder.of(HouseNumberSignBlockEntity::new, ModBlocks.HOUSE_NUMBER_SIGN.get()).build(null));
+    public static final RegistrySupplier<BlockEntityType<HighwaySignBlockEntity>> HIGHWAY_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("highway_sign_block_entity", () -> BlockEntityType.Builder.of(HighwaySignBlockEntity::new, ModBlocks.HIGHWAY_SIGN.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<TrafficSignBlockEntity>> TRAFFIC_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_sign_block_entity", () -> BlockEntityType.Builder.of(TrafficSignBlockEntity::new, ModBlocks.TRAFFIC_SIGN.get()).build(null));
         
     public static void register() {

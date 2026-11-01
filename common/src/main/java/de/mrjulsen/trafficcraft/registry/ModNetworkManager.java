@@ -9,6 +9,7 @@ import de.mrjulsen.trafficcraft.network.packets.cts.ColorPaletteItemPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.CreateNewTrafficSignTexturePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.CreativePatternCataloguePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.GetTrafficSignTexturePacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.HighwaySignPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.LinkerModePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PaintBrushPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket;
@@ -24,6 +25,7 @@ import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;
+import de.mrjulsen.trafficcraft.network.packets.stc.HighwaySignResultPacket;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 
 public class ModNetworkManager {
@@ -49,10 +51,12 @@ public class ModNetworkManager {
     public static final NetworkPacketType.Send<NetworkDirection.C2S, TrafficLightControllerPacket> UPDATE_TRAFFIC_LIGHT_CONTROLLER = NETWORK.registerSendOnlyPacket("update_traffic_light_controller", NetworkDirection.C2S, TrafficLightControllerPacket::handle, TrafficLightControllerPacket::new);
     public static final NetworkPacketType.Send<NetworkDirection.C2S, TrafficLightPacket> UPDATE_TRAFFIC_LIGHT_PACKET = NETWORK.registerSendOnlyPacket("update_traffic_light_packet", NetworkDirection.C2S, TrafficLightPacket::handle, TrafficLightPacket::new);
     public static final NetworkPacketType.Send<NetworkDirection.C2S, TrafficLightSchedulePacket> UPDATE_TRAFFIC_LIGHT_SCHEDULE = NETWORK.registerSendOnlyPacket("update_traffic_light_schedule", NetworkDirection.C2S, TrafficLightSchedulePacket::handle, TrafficLightSchedulePacket::new);
+    public static final NetworkPacketType.Send<NetworkDirection.C2S, HighwaySignPacket> UPDATE_HIGHWAY_SIGN = NETWORK.registerSendOnlyPacket("update_highway_sign", NetworkDirection.C2S, HighwaySignPacket::handle, HighwaySignPacket::new);
     public static final NetworkPacketType.Send<NetworkDirection.C2S, WritableSignPacket> UPDATE_WRITABLE_SIGN = NETWORK.registerSendOnlyPacket("update_writable_sign", NetworkDirection.C2S, WritableSignPacket::handle, WritableSignPacket::new);
     
     
     
+    public static final NetworkPacketType.Send<NetworkDirection.S2C, HighwaySignResultPacket> HIGHWAY_SIGN_RESULT = NETWORK.registerSendOnlyPacket("highway_sign_result", NetworkDirection.S2C, HighwaySignResultPacket::handle, HighwaySignResultPacket::new);
     public static final NetworkPacketType.Send<NetworkDirection.S2C, TrafficSignTextureResetPacket> RESET_TRAFFIC_SIGN_TEXTURE = NETWORK.registerSendOnlyPacket("reset_traffic_sign_texture", NetworkDirection.S2C, TrafficSignTextureResetPacket::handle, TrafficSignTextureResetPacket::new);
 
     

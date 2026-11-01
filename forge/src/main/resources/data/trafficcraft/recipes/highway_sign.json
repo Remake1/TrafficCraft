@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "#D#",
+        "###"
+    ],
+    "key": {
+        "#": [
+            {
+                "tag": "forge:plates/iron"
+            }
+        ],
+        "D": [
+            {
+                "tag": "forge:dyes/green"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:highway_sign",
+        "count": 4
+    }
+}

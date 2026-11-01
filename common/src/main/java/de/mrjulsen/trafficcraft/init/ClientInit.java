@@ -16,7 +16,9 @@ import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
+import de.mrjulsen.trafficcraft.client.HighwaySignColors;
 import de.mrjulsen.trafficcraft.client.TintedTextures;
+import de.mrjulsen.trafficcraft.client.ber.HighwaySignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.TownSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.TrafficLightBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.TrafficSignBlockEntityRenderer;
@@ -134,6 +136,7 @@ public class ClientInit {
             BlockEntityRendererRegistry.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), WritableSignBlockEntityRenderer<StreetSignBlockEntity>::new);
             BlockEntityRendererRegistry.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), WritableSignBlockEntityRenderer<HouseNumberSignBlockEntity>::new);
             BlockEntityRendererRegistry.register(ModBlockEntities.TRAFFIC_SIGN_BLOCK_ENTITY.get(), TrafficSignBlockEntityRenderer::new);
+            BlockEntityRendererRegistry.register(ModBlockEntities.HIGHWAY_SIGN_BLOCK_ENTITY.get(), HighwaySignBlockEntityRenderer::new);
             BlockEntityRendererRegistry.register(ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), TrafficLightBlockEntityRenderer::new);
             
             if (Platform.isFabric()) {
@@ -168,6 +171,8 @@ public class ClientInit {
 
         ClientLifecycleEvent.CLIENT_STARTED.register(mc -> {
             ColorHandlerRegistry.registerBlockColors(new TintedTextures.TintedBlock(), ModBlocks.COLORED_BLOCKS.toArray(RegistrySupplier[]::new));
+            ColorHandlerRegistry.registerBlockColors(new HighwaySignColors.Block(), ModBlocks.HIGHWAY_SIGN);
+            ColorHandlerRegistry.registerItemColors(new HighwaySignColors.Item(), ModBlocks.HIGHWAY_SIGN);
             ColorHandlerRegistry.registerItemColors(new TintedTextures.TintedItem(), 
                 ModBlocks.GUARDRAIL,
                 ModItems.PAINT_BRUSH,

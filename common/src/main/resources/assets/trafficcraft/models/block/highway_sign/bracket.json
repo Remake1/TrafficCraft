@@ -1,0 +1,67 @@
+{
+    "textures": {
+        "particle": "trafficcraft:block/sign",
+        "back": "trafficcraft:block/sign"
+    },
+    "elements": [
+        {
+            "from": [
+                7,
+                5,
+                16
+            ],
+            "to": [
+                9,
+                11,
+                23
+            ],
+            "faces": {
+                "east": {
+                    "uv": [
+                        0,
+                        0,
+                        2,
+                        6
+                    ],
+                    "texture": "#back"
+                },
+                "west": {
+                    "uv": [
+                        0,
+                        0,
+                        2,
+                        6
+                    ],
+                    "texture": "#back"
+                },
+                "south": {
+                    "uv": [
+                        0,
+                        0,
+                        2,
+                        6
+                    ],
+                    "texture": "#back"
+                },
+                "up": {
+                    "uv": [
+                        0,
+                        0,
+                        2,
+                        2
+                    ],
+                    "texture": "#back"
+                },
+                "down": {
+                    "uv": [
+                        0,
+                        0,
+                        2,
+                        2
+                    ],
+                    "texture": "#back"
+                }
+            }
+        }
+    ]
+}
