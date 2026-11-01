@@ -18,11 +18,27 @@ public class HighwaySignLine {
     private static final String NBT_SCALE = "Scale";
     private static final String NBT_ALIGN = "Align";
     private static final String NBT_ARROW = "Arrow";
+    private static final String NBT_ARROW_SIDE = "ArrowSide";
+    /** Legacy (before {@link #NBT_ARROW_SIDE}): only left or right edge. */
     private static final String NBT_ARROW_RIGHT = "ArrowRight";
 
     public enum ArrowSide {
+        /** At the left edge of the sign. */
         LEFT,
-        RIGHT;
+        /** At the right edge of the sign. */
+        RIGHT,
+        /** Directly left of the text. */
+        LEFT_OF_TEXT,
+        /** Directly right of the text. */
+        RIGHT_OF_TEXT;
+
+        public boolean isNextToText() {
+            return this == LEFT_OF_TEXT || this == RIGHT_OF_TEXT;
+        }
+
+        public static ArrowSide getByIndex(int index) {
+            return index >= 0 && index < values().length ? values()[index] : LEFT;
+        }
     }
 
     private String text;
@@ -106,7 +122,7 @@ public class HighwaySignLine {
         nbt.putFloat(NBT_SCALE, scale);
         nbt.putByte(NBT_ALIGN, (byte)alignment.getId());
         nbt.putByte(NBT_ARROW, (byte)arrow.getId());
-        nbt.putBoolean(NBT_ARROW_RIGHT, arrowSide == ArrowSide.RIGHT);
+        nbt.putByte(NBT_ARROW_SIDE, (byte)arrowSide.ordinal());
         return nbt;
     }
 
@@ -116,7 +132,7 @@ public class HighwaySignLine {
             nbt.contains(NBT_SCALE) ? nbt.getFloat(NBT_SCALE) : 1.0f,
             ETextAlignment.getById(nbt.getByte(NBT_ALIGN)),
             HighwayArrow.getById(nbt.getByte(NBT_ARROW)),
-            nbt.getBoolean(NBT_ARROW_RIGHT) ? ArrowSide.RIGHT : ArrowSide.LEFT
+            nbt.contains(NBT_ARROW_SIDE) ? ArrowSide.getByIndex(nbt.getByte(NBT_ARROW_SIDE)) : (nbt.getBoolean(NBT_ARROW_RIGHT) ? ArrowSide.RIGHT : ArrowSide.LEFT)
         );
     }
 }

@@ -208,8 +208,10 @@ public class HighwaySignEditorScreen extends Screen {
         }).bounds(x, y, 30, WIDGET_HEIGHT).tooltip(Tooltip.create(Component.translatable(KEY + "line.arrow", line.getArrow().getValueTranslation()))).build());
         x += 32;
 
-        Button side = addRenderableWidget(Button.builder(Component.literal(line.getArrowSide() == ArrowSide.LEFT ? "◀" : "▶"), b -> {
-            line.setArrowSide(line.getArrowSide() == ArrowSide.LEFT ? ArrowSide.RIGHT : ArrowSide.LEFT);
+        Button side = addRenderableWidget(Button.builder(Component.literal(arrowSideSymbol(line.getArrowSide())), b -> {
+            ArrowSide[] values = ArrowSide.values();
+            int step = hasShiftDown() ? values.length - 1 : 1;
+            line.setArrowSide(values[(line.getArrowSide().ordinal() + step) % values.length]);
             requestRebuild();
         }).bounds(x, y, 30, WIDGET_HEIGHT).tooltip(Tooltip.create(Component.translatable(KEY + "line.arrow_side", Component.translatable(KEY + "arrow_side." + line.getArrowSide().name().toLowerCase())))).build());
         side.active = line.getArrow().isVisible();
@@ -246,6 +248,15 @@ public class HighwaySignEditorScreen extends Screen {
             case LEFT -> "⇤";
             case RIGHT -> "⇥";
             default -> "↔";
+        };
+    }
+
+    private static String arrowSideSymbol(ArrowSide side) {
+        return switch (side) {
+            case RIGHT -> "\u25A1\u25B6";
+            case LEFT_OF_TEXT -> "\u25C0T";
+            case RIGHT_OF_TEXT -> "T\u25B6";
+            default -> "\u25C0\u25A1";
         };
     }
 

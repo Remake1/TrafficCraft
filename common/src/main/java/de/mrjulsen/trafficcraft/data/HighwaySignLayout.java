@@ -113,33 +113,49 @@ public final class HighwaySignLayout {
             float areaRight = w - PADDING;
 
             final HighwayArrow arrow = line.getArrow();
+            final ArrowSide side = line.getArrowSide();
             final float arrowSize = fontLineHeight * pixel * ARROW_SIZE;
-            float arrowX = 0;
+            final float arrowSpace = arrow.isVisible() ? arrowSize * (1 + ARROW_GAP) : 0;
             final float arrowY = y + (slotHeight - arrowSize) / 2.0f;
-            if (arrow.isVisible()) {
-                if (line.getArrowSide() == ArrowSide.RIGHT) {
-                    arrowX = areaRight - arrowSize;
-                    areaRight -= arrowSize * (1 + ARROW_GAP);
-                } else {
-                    arrowX = areaLeft;
-                    areaLeft += arrowSize * (1 + ARROW_GAP);
-                }
+            float arrowX = 0;
+
+            // Arrows at the sign edges reserve their space first, the text is aligned in the remaining area.
+            if (arrow.isVisible() && side == ArrowSide.LEFT) {
+                arrowX = areaLeft;
+                areaLeft += arrowSpace;
+            } else if (arrow.isVisible() && side == ArrowSide.RIGHT) {
+                arrowX = areaRight - arrowSize;
+                areaRight -= arrowSpace;
             }
+            final boolean arrowNextToText = arrow.isVisible() && side.isNextToText();
 
             // Horizontal fit: long lines are scaled down to fit into the available area.
             final String text = line.getText();
             final float areaWidth = Math.max(0, areaRight - areaLeft);
+            final float textAreaWidth = Math.max(0, areaWidth - (arrowNextToText ? arrowSpace : 0));
             final int rawWidth = text.isEmpty() ? 0 : textWidth.applyAsInt(text);
             float textScale = pixel;
-            if (rawWidth * textScale > areaWidth && rawWidth > 0) {
-                textScale = areaWidth / rawWidth;
+            if (rawWidth * textScale > textAreaWidth && rawWidth > 0) {
+                textScale = textAreaWidth / rawWidth;
             }
             final float scaledWidth = rawWidth * textScale;
-            final float textX = switch (line.getAlignment()) {
+
+            // Arrows next to the text form a group with the text, which is aligned as a whole.
+            final float groupWidth = arrowNextToText ? (rawWidth > 0 ? scaledWidth + arrowSpace : arrowSize) : scaledWidth;
+            final float groupX = switch (line.getAlignment()) {
                 case LEFT -> areaLeft;
-                case RIGHT -> areaRight - scaledWidth;
-                default -> areaLeft + (areaWidth - scaledWidth) / 2.0f;
+                case RIGHT -> areaRight - groupWidth;
+                default -> areaLeft + (areaWidth - groupWidth) / 2.0f;
             };
+            float textX = groupX;
+            if (arrowNextToText) {
+                if (side == ArrowSide.LEFT_OF_TEXT) {
+                    arrowX = groupX;
+                    textX = groupX + arrowSpace;
+                } else {
+                    arrowX = groupX + groupWidth - arrowSize;
+                }
+            }
             final float textY = y + (slotHeight - GLYPH_HEIGHT * textScale) / 2.0f;
 
             result.add(new LineLayout(text, textX, textY, textScale, arrow, arrowX, arrowY, arrowSize));
