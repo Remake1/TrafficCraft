@@ -181,12 +181,12 @@ public class HighwaySignEditorScreen extends Screen {
         final HighwaySignLine line = data.getLines().get(index);
         int x = left;
 
-        EditBox text = new EditBox(font, x + 1, y + 1, 126, WIDGET_HEIGHT - 2, Component.translatable(KEY + "line.text"));
+        EditBox text = new EditBox(font, x + 1, y + 1, 88, WIDGET_HEIGHT - 2, Component.translatable(KEY + "line.text"));
         text.setMaxLength(HighwaySignLine.MAX_TEXT_LENGTH);
         text.setValue(line.getText());
         text.setResponder(line::setText);
         addRenderableWidget(text);
-        x += 130;
+        x += 92;
 
         addRenderableWidget(Button.builder(Component.literal(alignmentSymbol(line.getAlignment())), b -> {
             line.setAlignment(ETextAlignment.values()[(line.getAlignment().ordinal() + 1) % ETextAlignment.values().length]);
@@ -199,6 +199,11 @@ public class HighwaySignEditorScreen extends Screen {
             requestRebuild();
         }).bounds(x, y, 36, WIDGET_HEIGHT).tooltip(Tooltip.create(Component.translatable(KEY + "line.scale"))).build());
         x += 38;
+
+        addLineColorButton(x, y, "A", "line.text_color", line.getCustomTextColor(), data.getTextColor(), line::setTextColor);
+        x += SWATCH_SIZE + 2;
+        addLineColorButton(x, y, "\u25A2", "line.highlight", line.getHighlightColor(), HighwaySignColorPresets.WHITE, line::setHighlightColor);
+        x += SWATCH_SIZE + 2;
 
         addRenderableWidget(Button.builder(Component.literal(arrowSymbol(line.getArrow())), b -> {
             HighwayArrow[] values = HighwayArrow.values();
@@ -230,6 +235,28 @@ public class HighwaySignEditorScreen extends Screen {
             requestRebuild();
         }).bounds(x, y, 20, WIDGET_HEIGHT).tooltip(Tooltip.create(Component.translatable(KEY + "line.move_up"))).build());
         up.active = index > 0;
+    }
+
+    /**
+     * A button to pick an optional color of a line. Click opens the color picker, shift-click resets the color.
+     * @param unsetLabel Shown on the button while no color is set.
+     * @param current The current color or {@link HighwaySignLine#NO_COLOR}.
+     * @param initial The color the picker starts with if no color is set.
+     */
+    private void addLineColorButton(int x, int y, String unsetLabel, String tooltipKey, int current, int initial, IntConsumer setter) {
+        final boolean isSet = current != HighwaySignLine.NO_COLOR;
+        Component colorName = isSet ? Component.literal(String.format("#%06X", current & 0xFFFFFF)) : Component.translatable(KEY + tooltipKey + ".none");
+        addRenderableWidget(Button.builder(isSet ? Component.empty() : Component.literal(unsetLabel), b -> {
+            if (hasShiftDown()) {
+                setter.accept(HighwaySignLine.NO_COLOR);
+                requestRebuild();
+                return;
+            }
+            DLWindow.openWindow(mgr -> new DLColorPickerWindow(mgr, false, DLColor.fromInt(isSet ? current : initial), picked -> setter.accept(picked.getAsARGB())));
+        }).bounds(x, y, SWATCH_SIZE, WIDGET_HEIGHT).tooltip(Tooltip.create(Component.translatable(KEY + tooltipKey, colorName))).build());
+        if (isSet) {
+            swatches.add(new Swatch(x, y, current, false));
+        }
     }
 
     private static float nextScale(float current, int direction) {
@@ -382,12 +409,21 @@ public class HighwaySignEditorScreen extends Screen {
 
         HighwaySignLayout layout = HighwaySignLayout.compute(data, font::width, font.lineHeight);
         for (LineLayout line : layout.getLines()) {
+            final int lineColor = line.color();
+            if (line.hasHighlight()) {
+                graphics.fill(
+                    Math.round(x + line.boxX0() * pixelsPerBlock), Math.round(y + line.boxY0() * pixelsPerBlock),
+                    Math.round(x + line.boxX1() * pixelsPerBlock), Math.round(y + line.boxY1() * pixelsPerBlock),
+                    line.highlightColor()
+                );
+            }
+
             if (line.hasText()) {
                 graphics.pose().pushPose();
                 graphics.pose().translate(x + line.textX() * pixelsPerBlock, y + line.textY() * pixelsPerBlock, 0);
                 float s = line.textScale() * pixelsPerBlock;
                 graphics.pose().scale(s, s, 1);
-                graphics.drawString(font, line.text(), 0, 0, textColor, false);
+                graphics.drawString(font, line.text(), 0, 0, lineColor, false);
                 graphics.pose().popPose();
             }
 

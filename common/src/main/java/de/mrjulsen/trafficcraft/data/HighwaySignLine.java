@@ -19,6 +19,8 @@ public class HighwaySignLine {
     private static final String NBT_ALIGN = "Align";
     private static final String NBT_ARROW = "Arrow";
     private static final String NBT_ARROW_SIDE = "ArrowSide";
+    private static final String NBT_TEXT_COLOR = "TextColor";
+    private static final String NBT_HIGHLIGHT = "Highlight";
     /** Legacy (before {@link #NBT_ARROW_SIDE}): only left or right edge. */
     private static final String NBT_ARROW_RIGHT = "ArrowRight";
 
@@ -46,6 +48,13 @@ public class HighwaySignLine {
     private ETextAlignment alignment;
     private HighwayArrow arrow;
     private ArrowSide arrowSide;
+    /** Text color of this line or {@link #NO_COLOR} to use the text color of the sign. */
+    private int textColor = NO_COLOR;
+    /** Background color of the box around the text of this line or {@link #NO_COLOR} for no box. */
+    private int highlightColor = NO_COLOR;
+
+    /** Valid colors are always opaque, so 0 can be used as "not set". */
+    public static final int NO_COLOR = 0;
 
     public HighwaySignLine(String text, float scale, ETextAlignment alignment, HighwayArrow arrow, ArrowSide arrowSide) {
         this.text = text == null ? "" : text;
@@ -60,7 +69,10 @@ public class HighwaySignLine {
     }
 
     public HighwaySignLine copy() {
-        return new HighwaySignLine(text, scale, alignment, arrow, arrowSide);
+        HighwaySignLine line = new HighwaySignLine(text, scale, alignment, arrow, arrowSide);
+        line.textColor = textColor;
+        line.highlightColor = highlightColor;
+        return line;
     }
 
     public String getText() {
@@ -103,6 +115,39 @@ public class HighwaySignLine {
         this.arrowSide = arrowSide;
     }
 
+    public boolean hasCustomTextColor() {
+        return textColor != NO_COLOR;
+    }
+
+    /** @return The custom text color of this line or {@link #NO_COLOR}. */
+    public int getCustomTextColor() {
+        return textColor;
+    }
+
+    /** @return The text color of this line, or {@code signTextColor} if the line has no own text color. */
+    public int getTextColor(int signTextColor) {
+        return hasCustomTextColor() ? textColor : signTextColor;
+    }
+
+    /** @param color The text color or {@link #NO_COLOR} to use the text color of the sign. */
+    public void setTextColor(int color) {
+        this.textColor = color == NO_COLOR ? NO_COLOR : color | 0xFF000000;
+    }
+
+    public boolean hasHighlight() {
+        return highlightColor != NO_COLOR;
+    }
+
+    /** @return The background color of the box around the text or {@link #NO_COLOR}. */
+    public int getHighlightColor() {
+        return highlightColor;
+    }
+
+    /** @param color The background color of the box around the text or {@link #NO_COLOR} for no box. */
+    public void setHighlightColor(int color) {
+        this.highlightColor = color == NO_COLOR ? NO_COLOR : color | 0xFF000000;
+    }
+
     /** Clamps all values into their valid ranges. Must be called on data received from clients. */
     public void sanitize() {
         if (text.length() > MAX_TEXT_LENGTH) {
@@ -114,6 +159,8 @@ public class HighwaySignLine {
             scale = 1.0f;
         }
         scale = Mth.clamp(scale, MIN_SCALE, MAX_SCALE);
+        setTextColor(textColor);
+        setHighlightColor(highlightColor);
     }
 
     public CompoundTag toNbt() {
@@ -123,16 +170,21 @@ public class HighwaySignLine {
         nbt.putByte(NBT_ALIGN, (byte)alignment.getId());
         nbt.putByte(NBT_ARROW, (byte)arrow.getId());
         nbt.putByte(NBT_ARROW_SIDE, (byte)arrowSide.ordinal());
+        if (hasCustomTextColor()) nbt.putInt(NBT_TEXT_COLOR, textColor);
+        if (hasHighlight()) nbt.putInt(NBT_HIGHLIGHT, highlightColor);
         return nbt;
     }
 
     public static HighwaySignLine fromNbt(CompoundTag nbt) {
-        return new HighwaySignLine(
+        HighwaySignLine line = new HighwaySignLine(
             nbt.getString(NBT_TEXT),
             nbt.contains(NBT_SCALE) ? nbt.getFloat(NBT_SCALE) : 1.0f,
             ETextAlignment.getById(nbt.getByte(NBT_ALIGN)),
             HighwayArrow.getById(nbt.getByte(NBT_ARROW)),
             nbt.contains(NBT_ARROW_SIDE) ? ArrowSide.getByIndex(nbt.getByte(NBT_ARROW_SIDE)) : (nbt.getBoolean(NBT_ARROW_RIGHT) ? ArrowSide.RIGHT : ArrowSide.LEFT)
         );
+        line.setTextColor(nbt.getInt(NBT_TEXT_COLOR));
+        line.setHighlightColor(nbt.getInt(NBT_HIGHLIGHT));
+        return line;
     }
 }

@@ -30,6 +30,8 @@ public final class HighwaySignLayout {
     public static final float ARROW_GAP = 0.25f;
     /** Height of the visible glyphs in font pixels. */
     public static final float GLYPH_HEIGHT = 7.0f;
+    /** Space between the text and the edge of its background box, in font pixels. */
+    public static final float HIGHLIGHT_PADDING = 2.0f;
 
     public static record LineLayout(
         String text,
@@ -42,7 +44,15 @@ public final class HighwaySignLayout {
         HighwayArrow arrow,
         float arrowX,
         float arrowY,
-        float arrowSize
+        float arrowSize,
+        /** Color of the text. Arrows always use the text color of the sign. */
+        int color,
+        /** Color of the box behind the text or {@link HighwaySignLine#NO_COLOR}. */
+        int highlightColor,
+        float boxX0,
+        float boxY0,
+        float boxX1,
+        float boxY1
     ) {
         public boolean hasText() {
             return !text.isEmpty();
@@ -50,6 +60,10 @@ public final class HighwaySignLayout {
 
         public boolean hasArrow() {
             return arrow.isVisible();
+        }
+
+        public boolean hasHighlight() {
+            return highlightColor != HighwaySignLine.NO_COLOR && hasText();
         }
     }
 
@@ -158,7 +172,15 @@ public final class HighwaySignLayout {
             }
             final float textY = y + (slotHeight - GLYPH_HEIGHT * textScale) / 2.0f;
 
-            result.add(new LineLayout(text, textX, textY, textScale, arrow, arrowX, arrowY, arrowSize));
+            // Box around the text only. The font advance already contains 1 pixel of space after the last glyph.
+            final float pad = HIGHLIGHT_PADDING * textScale;
+            final float boxX0 = textX - pad;
+            final float boxX1 = textX + scaledWidth + pad - textScale;
+            final float boxY0 = textY - pad;
+            final float boxY1 = textY + GLYPH_HEIGHT * textScale + pad;
+
+            result.add(new LineLayout(text, textX, textY, textScale, arrow, arrowX, arrowY, arrowSize,
+                line.getTextColor(data.getTextColor()), line.getHighlightColor(), boxX0, boxY0, boxX1, boxY1));
             y += slotHeight;
         }
         return new HighwaySignLayout(w, h, result);

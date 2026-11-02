@@ -12,6 +12,7 @@ import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.HighwaySignBlock;
 import de.mrjulsen.trafficcraft.block.entity.HighwaySignBlockEntity;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
+import de.mrjulsen.trafficcraft.data.HighwayArrow;
 import de.mrjulsen.trafficcraft.data.HighwaySignLayout;
 import de.mrjulsen.trafficcraft.data.HighwaySignLayout.LineLayout;
 import net.minecraft.client.gui.Font;
@@ -35,6 +36,7 @@ public class HighwaySignBlockEntityRenderer implements BlockEntityRenderer<Highw
 
     /** Distance of the front face from the block center. */
     private static final float FACE_OFFSET = 0.5f - (float)HighwaySignBlock.PANEL_THICKNESS / 16.0f;
+    private static final float BOX_Z = 0.001f;
     private static final float TEXT_Z = 0.002f;
     private static final float ARROW_Z = 0.003f;
     private static final int DEFAULT_VIEW_DISTANCE = 96;
@@ -58,7 +60,6 @@ public class HighwaySignBlockEntityRenderer implements BlockEntityRenderer<Highw
         }
 
         Direction facing = state.getValue(HighwaySignBlock.FACING);
-        int color = blockEntity.getData().getTextColor();
 
         poseStack.pushPose();
         // Local space: +X = right side of the sign (seen from the front), +Y = up, +Z = towards the viewer.
@@ -67,7 +68,14 @@ public class HighwaySignBlockEntityRenderer implements BlockEntityRenderer<Highw
         // Origin: top left corner of the front face. Layout coordinates point down, so y is negated below.
         poseStack.translate(-0.5f, layout.getHeight() - 0.5f, -FACE_OFFSET);
 
+        // Arrows always use the text color of the sign. Only the text uses the (optional) color of its line.
+        final int signTextColor = blockEntity.getData().getTextColor();
         for (LineLayout line : layout.getLines()) {
+            final int color = line.color();
+            if (line.hasHighlight()) {
+                renderBox(poseStack, bufferSource, line, packedLight);
+            }
+
             if (line.hasText()) {
                 poseStack.pushPose();
                 poseStack.translate(line.textX(), -line.textY(), TEXT_Z);
@@ -77,11 +85,30 @@ public class HighwaySignBlockEntityRenderer implements BlockEntityRenderer<Highw
             }
 
             if (line.hasArrow()) {
-                renderArrow(poseStack, bufferSource, line, color, packedLight);
+                renderArrow(poseStack, bufferSource, line, signTextColor, packedLight);
             }
         }
 
         poseStack.popPose();
+    }
+
+    /** Draws the colored box behind the text, using the white cell of the arrow atlas (same render batch as arrows). */
+    private void renderBox(PoseStack poseStack, MultiBufferSource bufferSource, LineLayout line, int packedLight) {
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(ARROWS_TEXTURE));
+        Matrix4f pose = poseStack.last().pose();
+        Matrix3f normal = poseStack.last().normal();
+
+        int color = line.highlightColor();
+        float r = ((color >> 16) & 0xFF) / 255.0f;
+        float g = ((color >> 8) & 0xFF) / 255.0f;
+        float b = (color & 0xFF) / 255.0f;
+        float u = HighwayArrow.WHITE_U;
+        float v = HighwayArrow.WHITE_V;
+
+        vertex(consumer, pose, normal, line.boxX0(), -line.boxY0(), BOX_Z, u, v, r, g, b, packedLight);
+        vertex(consumer, pose, normal, line.boxX0(), -line.boxY1(), BOX_Z, u, v, r, g, b, packedLight);
+        vertex(consumer, pose, normal, line.boxX1(), -line.boxY1(), BOX_Z, u, v, r, g, b, packedLight);
+        vertex(consumer, pose, normal, line.boxX1(), -line.boxY0(), BOX_Z, u, v, r, g, b, packedLight);
     }
 
     private void renderArrow(PoseStack poseStack, MultiBufferSource bufferSource, LineLayout line, int color, int packedLight) {
@@ -102,14 +129,14 @@ public class HighwaySignBlockEntityRenderer implements BlockEntityRenderer<Highw
         float v0 = line.arrow().getV0();
         float v1 = line.arrow().getV1();
 
-        vertex(consumer, pose, normal, x0, yTop, u0, v0, r, g, b, packedLight);
-        vertex(consumer, pose, normal, x0, yBottom, u0, v1, r, g, b, packedLight);
-        vertex(consumer, pose, normal, x1, yBottom, u1, v1, r, g, b, packedLight);
-        vertex(consumer, pose, normal, x1, yTop, u1, v0, r, g, b, packedLight);
+        vertex(consumer, pose, normal, x0, yTop, ARROW_Z, u0, v0, r, g, b, packedLight);
+        vertex(consumer, pose, normal, x0, yBottom, ARROW_Z, u0, v1, r, g, b, packedLight);
+        vertex(consumer, pose, normal, x1, yBottom, ARROW_Z, u1, v1, r, g, b, packedLight);
+        vertex(consumer, pose, normal, x1, yTop, ARROW_Z, u1, v0, r, g, b, packedLight);
     }
 
-    private static void vertex(VertexConsumer consumer, Matrix4f pose, Matrix3f normal, float x, float y, float u, float v, float r, float g, float b, int light) {
-        consumer.vertex(pose, x, y, ARROW_Z)
+    private static void vertex(VertexConsumer consumer, Matrix4f pose, Matrix3f normal, float x, float y, float z, float u, float v, float r, float g, float b, int light) {
+        consumer.vertex(pose, x, y, z)
             .color(r, g, b, 1.0f)
             .uv(u, v)
             .overlayCoords(OverlayTexture.NO_OVERLAY)

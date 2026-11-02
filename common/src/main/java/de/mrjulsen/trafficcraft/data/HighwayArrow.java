@@ -25,6 +25,11 @@ public enum HighwayArrow implements ITranslatableEnum {
 
     public static final int ATLAS_COLUMNS = 4;
     public static final int ATLAS_ROWS = 3;
+    /** Index of a fully white atlas cell, used to draw solid colored boxes in the same render batch as arrows. */
+    public static final int WHITE_CELL_INDEX = ATLAS_COLUMNS * ATLAS_ROWS - 1;
+    /** Texture coordinates of the center of the white atlas cell. */
+    public static final float WHITE_U = ((WHITE_CELL_INDEX % ATLAS_COLUMNS) + 0.5f) / ATLAS_COLUMNS;
+    public static final float WHITE_V = ((WHITE_CELL_INDEX / ATLAS_COLUMNS) + 0.5f) / ATLAS_ROWS;
 
     private final int id;
     private final String name;
