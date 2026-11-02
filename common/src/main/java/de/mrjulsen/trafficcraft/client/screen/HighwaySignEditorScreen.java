@@ -13,6 +13,7 @@ import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.trafficcraft.block.HighwaySignBlock.ResizeResult;
 import de.mrjulsen.trafficcraft.block.entity.HighwaySignBlockEntity;
+import de.mrjulsen.trafficcraft.client.HighwaySignClipboard;
 import de.mrjulsen.trafficcraft.client.ber.HighwaySignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.data.HighwayArrow;
 import de.mrjulsen.trafficcraft.data.HighwaySignColorPresets;
@@ -66,6 +67,7 @@ public class HighwaySignEditorScreen extends Screen {
     private boolean waitingForServer = false;
     private int waitTicks = 0;
     private Component status = null;
+    private boolean statusIsError = false;
 
     public HighwaySignEditorScreen(HighwaySignBlockEntity blockEntity) {
         super(Component.translatable(KEY + "title"));
@@ -130,11 +132,16 @@ public class HighwaySignEditorScreen extends Screen {
             data.getLines().add(new HighwaySignLine());
             scrollOffset = Math.max(0, data.getLines().size() - visibleLines);
             requestRebuild();
-        }).bounds(left, bottom, 96, 20).build());
+        }).bounds(left, bottom, 70, 20).build());
         addLine.active = data.canAddLine();
 
-        addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, b -> onClose()).bounds(left + CONTENT_WIDTH - 196, bottom, 96, 20).build());
-        Button done = addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, b -> save()).bounds(left + CONTENT_WIDTH - 96, bottom, 96, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + "copy"), b -> copy())
+            .bounds(left + 74, bottom, 50, 20).tooltip(Tooltip.create(Component.translatable(KEY + "copy.tooltip"))).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + "paste"), b -> paste())
+            .bounds(left + 126, bottom, 50, 20).tooltip(Tooltip.create(Component.translatable(KEY + "paste.tooltip"))).build());
+
+        addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, b -> onClose()).bounds(left + CONTENT_WIDTH - 122, bottom, 60, 20).build());
+        Button done = addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, b -> save()).bounds(left + CONTENT_WIDTH - 60, bottom, 60, 20).build());
         done.active = !waitingForServer;
     }
 
@@ -303,14 +310,37 @@ public class HighwaySignEditorScreen extends Screen {
         };
     }
 
+    /** Copies content and styles of the edited sign (including unsaved changes) to the clipboard. */
+    private void copy() {
+        HighwaySignClipboard.copy(data);
+        setStatus(Component.translatable(KEY + "copied"), false);
+    }
+
+    /** Replaces everything in the editor with the copied sign. Applied to the world when "Done" is pressed. */
+    private void paste() {
+        HighwaySignClipboard.paste().ifPresentOrElse(pasted -> {
+            data.set(pasted);
+            if (data.getLines().isEmpty()) {
+                data.getLines().add(new HighwaySignLine());
+            }
+            scrollOffset = 0;
+            setStatus(Component.translatable(KEY + "pasted"), false);
+        }, () -> setStatus(Component.translatable(KEY + "paste_invalid"), true));
+    }
+
+    private void setStatus(Component text, boolean error) {
+        status = text;
+        statusIsError = error;
+        requestRebuild();
+    }
+
     private void save() {
         if (waitingForServer) {
             return;
         }
         waitingForServer = true;
         waitTicks = 0;
-        status = Component.translatable(KEY + "saving");
-        requestRebuild();
+        setStatus(Component.translatable(KEY + "saving"), false);
         ModNetworkManager.UPDATE_HIGHWAY_SIGN.send(NetworkDirection.toServer(), new HighwaySignPacket(anchor, data.copy()));
     }
 
@@ -327,8 +357,7 @@ public class HighwaySignEditorScreen extends Screen {
         if (result == ResizeResult.OK) {
             onClose();
         } else {
-            status = Component.translatable(KEY + "error." + result.name().toLowerCase());
-            requestRebuild();
+            setStatus(Component.translatable(KEY + "error." + result.name().toLowerCase()), true);
         }
     }
 
@@ -337,8 +366,7 @@ public class HighwaySignEditorScreen extends Screen {
         super.tick();
         if (waitingForServer && ++waitTicks > SERVER_TIMEOUT_TICKS) {
             waitingForServer = false;
-            status = Component.translatable(KEY + "error.timeout");
-            requestRebuild();
+            setStatus(Component.translatable(KEY + "error.timeout"), true);
         }
         if (minecraft != null && minecraft.level != null && !(minecraft.level.getBlockEntity(anchor) instanceof HighwaySignBlockEntity)) {
             onClose();
@@ -381,11 +409,11 @@ public class HighwaySignEditorScreen extends Screen {
 
         if (data.getLines().size() > visibleLines) {
             Component scroll = Component.literal((scrollOffset + 1) + "-" + Math.min(data.getLines().size(), scrollOffset + visibleLines) + " / " + data.getLines().size());
-            graphics.drawString(font, scroll, left() + 100, height - 18, 0xFFA0A0A0);
+            graphics.drawString(font, scroll, left() + CONTENT_WIDTH - font.width(scroll), 5, 0xFFA0A0A0);
         }
 
         if (status != null) {
-            graphics.drawCenteredString(font, status, width / 2, height - 36, waitingForServer ? TEXT_COLOR : STATUS_COLOR);
+            graphics.drawCenteredString(font, status, width / 2, height - 36, statusIsError ? STATUS_COLOR : TEXT_COLOR);
         }
     }
 

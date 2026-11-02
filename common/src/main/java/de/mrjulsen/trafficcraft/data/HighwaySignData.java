@@ -52,6 +52,17 @@ public class HighwaySignData {
         return data;
     }
 
+    /** Replaces all content and styles of this sign with a copy of {@code other}. */
+    public void set(HighwaySignData other) {
+        this.width = other.width;
+        this.height = other.height;
+        this.backgroundColor = other.backgroundColor;
+        this.textColor = other.textColor;
+        this.border = other.border;
+        this.lines.clear();
+        other.lines.forEach(x -> this.lines.add(x.copy()));
+    }
+
     public static int getMaxLines(int height) {
         return height * LINES_PER_BLOCK;
     }
